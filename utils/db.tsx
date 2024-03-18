@@ -18,7 +18,7 @@ export async function sendMessage(data: SendMessageParams): Promise<{ sent: stri
 
   if(win) return {sent: null}
 
-  const post = await prisma.post.create({
+  const post = await prisma.message.create({
     data: {title: data.email, content: data.message}
   })
 
