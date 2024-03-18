@@ -3,7 +3,12 @@ import { Form, redirect, useActionData } from "@remix-run/react";
 import { sendMessage } from "utils/db";
 import { z } from "zod";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
-import { useForm } from "@conform-to/react";
+import {
+  getFormProps,
+  getInputProps,
+  getTextareaProps,
+  useForm,
+} from "@conform-to/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -70,44 +75,16 @@ export default function Index() {
   });
 
   return (
-    <Form
-      method="POST"
-      id={form.id}
-      // The `onSubmit` handler is required for client validation
-      onSubmit={form.onSubmit}
-      aria-invalid={form.errors ? true : undefined}
-      aria-describedby={form.errors ? form.errorId : undefined}
-    >
+    <Form method="POST" {...getFormProps(form)}>
       <div id={form.errorId}>{form.errors}</div>
       <div>
         <label htmlFor={fields.email.id}>Email</label>
-        <input
-          id={fields.email.id}
-          type="email"
-          name={fields.email.name}
-          defaultValue={fields.email.initialValue as string}
-          required={fields.email.required}
-          aria-invalid={fields.email.errors ? true : undefined}
-          aria-describedby={
-            fields.email.errors ? fields.email.errorId : undefined
-          }
-        />
+        <input {...getInputProps(fields.email, { type: "email" })} />
         <div id={fields.email.errorId}>{fields.email.errors}</div>
       </div>
       <div>
         <label htmlFor={fields.message.id}>Message</label>
-        <textarea
-          id={fields.message.id}
-          name={fields.message.name}
-          defaultValue={fields.message.initialValue as string}
-          required={fields.message.required}
-          minLength={fields.message.minLength}
-          maxLength={fields.message.maxLength}
-          aria-invalid={fields.message.errors ? true : undefined}
-          aria-describedby={
-            fields.message.errors ? fields.message.errorId : undefined
-          }
-        />
+        <textarea {...getTextareaProps(fields.message)} />
         <div id={fields.message.errorId}>{fields.message.errors}</div>
       </div>
       <button>Send</button>
