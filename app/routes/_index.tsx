@@ -63,12 +63,18 @@ export default function Index() {
     shouldValidate: "onBlur",
     // Then, revalidate field as user types again
     shouldRevalidate: "onInput",
+    // Run the same validation logic on client
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema });
+    },
   });
 
   return (
     <Form
       method="POST"
       id={form.id}
+      // The `onSubmit` handler is required for client validation
+      onSubmit={form.onSubmit}
       aria-invalid={form.errors ? true : undefined}
       aria-describedby={form.errors ? form.errorId : undefined}
     >
