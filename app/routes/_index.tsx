@@ -59,6 +59,10 @@ export default function Index() {
 
     // To derive all validation attributes
     constraint: getZodConstraint(schema),
+    // Validate field once user leaves the field
+    shouldValidate: "onBlur",
+    // Then, revalidate field as user types again
+    shouldRevalidate: "onInput",
   });
 
   return (
