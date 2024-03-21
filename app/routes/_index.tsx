@@ -18,7 +18,7 @@ export default function Index() {
         <Link to="nested-form">Nested Object form</Link>
       </div>
       <div>
-        <Link to="array-form">Nested Array form</Link>
+        <Link to="array-form">Nested List form</Link>
       </div>
     </>
   );

@@ -50,10 +50,7 @@ export async function createAddress(data: CreateAddressParams) {
 }
 
 type CreateUserParams = {
-  name: string;
-  age: number;
-  contacts?: {
-    mobile: string;
+  contacts: {
     email: string;
   }[];
 };
@@ -70,23 +67,20 @@ export async function createUser(data: CreateUserParams) {
     return null;
   }
 
-  try {
-    const user = await prisma.user.create({
-      data: {
-        name: data.name,
-        age: data.age,
-        contacts: {
-          create: data.contacts.map((contact) => ({
-            mobile: contact.mobile,
-            email: contact.email,
-          })),
-        },
-      },
-    });
+  // try {
+  //   const user = await prisma.user.create({
+  //     data: {
+  //       contacts: {
+  //         create: data.contacts.map((contact) => ({
+  //           email: contact.email,
+  //         })),
+  //       },
+  //     },
+  //   });
 
-    return user;
-  } catch (e) {
-    console.log("Error inserting user in db");
-    return null;
-  }
+  //   return user;
+  // } catch (e) {
+  //   console.log("Error inserting user in db");
+  //   return null;
+  // }
 }

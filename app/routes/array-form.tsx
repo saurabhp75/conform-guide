@@ -1,19 +1,26 @@
-import { getInputProps, useForm } from "@conform-to/react";
+import {
+  getFieldsetProps,
+  getFormProps,
+  getInputProps,
+  useForm,
+} from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
-import { createUser } from "utils/db";
+import { Form, useActionData } from "@remix-run/react";
+// import { createUser } from "utils/db";
 import { z } from "zod";
 
 const ContactsFieldSetSchema = z.object({
-  mobile: z
-    .string({ required_error: "mobile no. is required" })
-    .min(10, "Must be a valid mobile number")
-    .max(14, "Must be a valid mobile number"),
-  email: z
-    .string({ required_error: "Email is required" })
-    .email("Email is invalid"),
+  mobile: z.string(),
+  email: z.string().optional(),
+  // mobile: z
+  //   .string({ required_error: "mobile no. is required" })
+  //   .min(10, "Must be a valid mobile number")
+  //   .max(14, "Must be a valid mobile number"),
+  // email: z
+  //   .string({ required_error: "Email is required" })
+  //   .email("Email is invalid"),
 });
 
 // export type ContactsFieldSet = z.infer<typeof ContactsFieldSetSchema>;
@@ -32,7 +39,6 @@ export const UserEditorSchema = z.object({
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-
   // Replace `Object.fromEntries()` with the parseWithZod helper
   const submission = parseWithZod(formData, { schema: UserEditorSchema });
 
@@ -41,41 +47,39 @@ export async function action({ request }: ActionFunctionArgs) {
     return submission.reply();
   }
 
-  const user = await createUser(submission.value);
+  // const user = await createUser(submission.value);
 
-  console.log({ user });
+  // console.log({ user });
 
-  // Return a form error if the message is not sent
-  if (!user) {
-    return submission.reply({
-      formErrors: ["Failed to send the message. Please try again later."],
-    });
-  }
+  // // Return a form error if the message is not sent
+  // if (!user) {
+  //   return submission.reply({
+  //     formErrors: ["Failed to send the message. Please try again later."],
+  //   });
+  // }
 
   return redirect("/user");
-  // return json({});
 }
 
 export default function Example() {
   const lastResult = useActionData<typeof action>();
-
   const [form, fields] = useForm({
-    id: "address-form", // need to set the id for nested form objects
+    // id: "address-form", // need to set the id for nested form objects
     lastResult,
-    constraint: getZodConstraint(UserEditorSchema),
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema: UserEditorSchema });
+    },
     shouldValidate: "onBlur",
+    constraint: getZodConstraint(UserEditorSchema),
     // shouldRevalidate: "onInput",
     defaultValue: {
       contacts: [{}],
-    },
-    onValidate({ formData }) {
-      return parseWithZod(formData, { schema: UserEditorSchema });
     },
   });
   const contacts = fields.contacts.getFieldList();
 
   return (
-    <form method="POST" id={form.id}>
+    <Form method="POST" {...getFormProps(form)}>
       <h1>NestedArray form</h1>
       <label htmlFor={fields.name.id}>Name:</label>
       <input {...getInputProps(fields.name, { type: "text" })} />
@@ -88,24 +92,30 @@ export default function Example() {
       <ul>
         {contacts.map((contact, index) => {
           const contactFields = contact.getFieldset();
+          console.log("key:", contact.key);
+
           return (
-            <li key={contact.key}>
-              <label htmlFor={contactFields.mobile.id}>{`Mobile#${index+1}:`}</label>
+            <li key={contact.key} {...getFieldsetProps(contact)}>
+              <label htmlFor={contactFields.mobile.id}>{`Mobile#${
+                index + 1
+              }:`}</label>
               <input
                 {...getInputProps(contactFields.mobile, { type: "text" })}
               />
               <button
-              {...form.remove.getButtonProps({
-                name: fields.contacts.name,
-                index,
-              })}
-            >
-              Delete
-            </button>
+                {...form.remove.getButtonProps({
+                  name: fields.contacts.name,
+                  index,
+                })}
+              >
+                Delete
+              </button>
               <div id={contactFields.mobile.errorId}>
                 {contactFields.mobile.errors}
               </div>
-              <label htmlFor={contactFields.email.id}>{`Email#${index+1}:`}</label>
+              <label htmlFor={contactFields.email.id}>{`Email#${
+                index + 1
+              }:`}</label>
               <input
                 {...getInputProps(contactFields.email, { type: "email" })}
               />
@@ -125,6 +135,6 @@ export default function Example() {
       </button>
       <div id={form.errorId}>{form.errors}</div>
       <button>Submit</button>
-    </form>
+    </Form>
   );
 }
