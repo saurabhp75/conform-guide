@@ -15,9 +15,6 @@ export async function sendMessage(
   data: SendMessageParams
 ): Promise<{ sent: string | null }> {
   const win = Math.random() > 0.5;
-
-  console.log({win});
-
   if (win) return { sent: null };
 
   const post = await prisma.message.create({
@@ -25,4 +22,71 @@ export async function sendMessage(
   });
 
   return { sent: post.title };
+}
+
+type CreateAddressParams = {
+  address: {
+    street: string;
+    zipcode: string;
+    city: string;
+    country: string;
+  };
+};
+
+export async function createAddress(data: CreateAddressParams) {
+  const win = Math.random() > 0.5;
+  if (win) return { sent: null };
+
+  const address = await prisma.address.create({
+    data: {
+      street: data.address.street,
+      zipcode: data.address.zipcode,
+      city: data.address.city,
+      country: data.address.country,
+    },
+  });
+
+  return address;
+}
+
+type CreateUserParams = {
+  name: string;
+  age: number;
+  contacts?: {
+    mobile: string;
+    email: string;
+  }[];
+};
+
+export async function createUser(data: CreateUserParams) {
+  const win = Math.random() > 0.5;
+  if (win) {
+    console.log("### Toss failed ###");
+    return null;
+  }
+
+  if (!data.contacts) {
+    console.log("### No contacts ###");
+    return null;
+  }
+
+  try {
+    const user = await prisma.user.create({
+      data: {
+        name: data.name,
+        age: data.age,
+        contacts: {
+          create: data.contacts.map((contact) => ({
+            mobile: contact.mobile,
+            email: contact.email,
+          })),
+        },
+      },
+    });
+
+    return user;
+  } catch (e) {
+    console.log("Error inserting user in db");
+    return null;
+  }
 }
