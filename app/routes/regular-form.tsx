@@ -60,6 +60,7 @@ export default function Index() {
     // Then, revalidate field as user types again
     shouldRevalidate: "onInput",
     // Run the same validation logic on client
+    // Run this funtion when the form is (re)validated
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
@@ -67,7 +68,6 @@ export default function Index() {
 
   return (
     <Form method="POST" {...getFormProps(form)}>
-      <div id={form.errorId}>{form.errors}</div>
       <div>
         <label htmlFor={fields.email.id}>Email</label>
         <input {...getInputProps(fields.email, { type: "email" })} />
@@ -78,6 +78,7 @@ export default function Index() {
         <textarea {...getTextareaProps(fields.message)} />
         <div id={fields.message.errorId}>{fields.message.errors}</div>
       </div>
+      <div id={form.errorId}>{form.errors}</div>
       <button>Send</button>
     </Form>
   );
