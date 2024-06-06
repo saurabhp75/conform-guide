@@ -45,25 +45,30 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Index() {
   const lastResult = useActionData<typeof action>();
+  
   // The useForm hook will return all the metadata we need to render the form
   // and focus on the first invalid field when the form is submitted
   const [form, fields] = useForm({
-    // This not only sync the error from the server
+    // This not only sync the error sent from the server
     // But also used as the default value of the form
     // in case the document is reloaded for progressive enhancement
     lastResult,
 
-    // To derive all validation attributes
+    // Derive html validation attributes for each field
     constraint: getZodConstraint(schema),
-    // Validate field once user leaves the field
-    shouldValidate: "onBlur",
-    // Then, revalidate field as user types again
-    shouldRevalidate: "onInput",
-    // Run the same validation logic on client
+    // When to validate, default is 'onSubmit'
+    // shouldValidate: "onBlur", // "onSubmit"|"onBlur"|"onInput"
+    // When to re-validate each field after it is validated,
+    // defaults to value of shouldValidate
+    // shouldRevalidate: "onInput", // "onSubmit"|"onBlur"|"onInput"
+    // Enable client side validation
     // Run this funtion when the form is (re)validated
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
+    // called before form is submitted. If onValidate is set, 
+    // it will be called only if client validation passes
+    // onSubmit()
   });
 
   return (
