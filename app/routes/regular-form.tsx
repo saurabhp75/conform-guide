@@ -56,6 +56,7 @@ export default function Index() {
 
     // Derive html validation attributes for each field
     constraint: getZodConstraint(schema),
+    
     // When to validate, default is 'onSubmit'
     // shouldValidate: "onBlur", // "onSubmit"|"onBlur"|"onInput"
     
