@@ -1,7 +1,7 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
+import { Link, useActionData } from "@remix-run/react";
 import { createAddress } from "utils/db";
 import { z } from "zod";
 
@@ -69,29 +69,34 @@ export default function Example() {
   const address = fields.address.getFieldset();
 
   return (
-    <form method="POST" {...getFormProps(form)}>
+    <div>
       <div>
-        <label htmlFor={address.street.id}>Street</label>
-        <input {...getInputProps(address.street, { type: "text" })} />
-        <div id={address.street.errorId}>{address.street.errors}</div>
+        <Link to="/">Home</Link>
       </div>
-      <div>
-        <label htmlFor={address.zipcode.id}>Zipcode</label>
-        <input {...getInputProps(address.zipcode, { type: "text" })} />
-        <div id={address.zipcode.errorId}>{address.zipcode.errors}</div>
-      </div>
-      <div>
-        <label htmlFor={address.city.id}>City</label>
-        <input {...getInputProps(address.city, { type: "text" })} />
-        <div id={address.city.errorId}>{address.city.errors}</div>
-      </div>
-      <div>
-        <label htmlFor={address.country.id}>Country</label>
-        <input {...getInputProps(address.country, { type: "text" })} />
-        <div id={address.country.errorId}>{address.country.errors}</div>
-      </div>
-      <div id={form.errorId}>{form.errors}</div>
-      <button>Send</button>
-    </form>
+      <form method="POST" {...getFormProps(form)}>
+        <div>
+          <label htmlFor={address.street.id}>Street</label>
+          <input {...getInputProps(address.street, { type: "text" })} />
+          <div id={address.street.errorId}>{address.street.errors}</div>
+        </div>
+        <div>
+          <label htmlFor={address.zipcode.id}>Zipcode</label>
+          <input {...getInputProps(address.zipcode, { type: "text" })} />
+          <div id={address.zipcode.errorId}>{address.zipcode.errors}</div>
+        </div>
+        <div>
+          <label htmlFor={address.city.id}>City</label>
+          <input {...getInputProps(address.city, { type: "text" })} />
+          <div id={address.city.errorId}>{address.city.errors}</div>
+        </div>
+        <div>
+          <label htmlFor={address.country.id}>Country</label>
+          <input {...getInputProps(address.country, { type: "text" })} />
+          <div id={address.country.errorId}>{address.country.errors}</div>
+        </div>
+        <div id={form.errorId}>{form.errors}</div>
+        <button>Send</button>
+      </form>
+    </div>
   );
 }

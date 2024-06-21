@@ -15,10 +15,13 @@ export default function Index() {
         <Link to="regular-form">Regular form</Link>
       </div>
       <div>
-        <Link to="nested-form">Nested Object form</Link>
+        <Link to="array-form">Array form</Link>
       </div>
       <div>
-        <Link to="array-form">Nested List form</Link>
+        <Link to="nested-form">Nested object form</Link>
+      </div>
+      <div>
+        <Link to="nested-array-form">Nested array form</Link>
       </div>
     </>
   );

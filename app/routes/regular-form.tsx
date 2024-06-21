@@ -6,7 +6,7 @@ import {
 } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
 import { ActionFunctionArgs } from "@remix-run/node";
-import { Form, redirect, useActionData } from "@remix-run/react";
+import { Form, Link, redirect, useActionData } from "@remix-run/react";
 import { sendMessage } from "utils/db";
 import { z } from "zod";
 
@@ -45,7 +45,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Index() {
   const lastResult = useActionData<typeof action>();
-  
+
   // The useForm hook will return all the metadata we need to render the form
   // and focus on the first invalid field when the form is submitted
   const [form, fields] = useForm({
@@ -66,25 +66,30 @@ export default function Index() {
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
-    // called before form is submitted. If onValidate is set, 
+    // called before form is submitted. If onValidate is set,
     // it will be called only if client validation passes
     // onSubmit()
   });
 
   return (
-    <Form method="POST" {...getFormProps(form)}>
+    <div>
       <div>
-        <label htmlFor={fields.email.id}>Email</label>
-        <input {...getInputProps(fields.email, { type: "email" })} />
-        <div id={fields.email.errorId}>{fields.email.errors}</div>
+        <Link to="/">Home</Link>
       </div>
-      <div>
-        <label htmlFor={fields.message.id}>Message</label>
-        <textarea {...getTextareaProps(fields.message)} />
-        <div id={fields.message.errorId}>{fields.message.errors}</div>
-      </div>
-      <div id={form.errorId}>{form.errors}</div>
-      <button>Send</button>
-    </Form>
+      <Form method="POST" {...getFormProps(form)}>
+        <div>
+          <label htmlFor={fields.email.id}>Email</label>
+          <input {...getInputProps(fields.email, { type: "email" })} />
+          <div id={fields.email.errorId}>{fields.email.errors}</div>
+        </div>
+        <div>
+          <label htmlFor={fields.message.id}>Message</label>
+          <textarea {...getTextareaProps(fields.message)} />
+          <div id={fields.message.errorId}>{fields.message.errors}</div>
+        </div>
+        <div id={form.errorId}>{form.errors}</div>
+        <button>Send</button>
+      </Form>
+    </div>
   );
 }

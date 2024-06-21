@@ -1,12 +1,29 @@
 import {
+  getFieldsetProps,
   getFormProps,
   getInputProps,
   useForm,
 } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
+// import { createUser } from "utils/db";
 import { z } from "zod";
+
+const ContactsFieldSetSchema = z.object({
+  mobile: z.string(),
+  email: z.string().optional(),
+  // mobile: z
+  //   .string({ required_error: "mobile no. is required" })
+  //   .min(10, "Must be a valid mobile number")
+  //   .max(14, "Must be a valid mobile number"),
+  // email: z
+  //   .string({ required_error: "Email is required" })
+  //   .email("Email is invalid"),
+});
+
+// export type ContactsFieldSet = z.infer<typeof ContactsFieldSetSchema>;
 
 export const UserEditorSchema = z.object({
   name: z.string({ required_error: "age is required" }).min(5).max(30),
@@ -17,11 +34,12 @@ export const UserEditorSchema = z.object({
     })
     .gte(1, "Age must be greater than 1")
     .lte(120, "Age must be less than 120"),
-  emails: z.array(z.string()),
+  contacts: z.array(ContactsFieldSetSchema).max(3).optional(),
 });
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
+  // Replace `Object.fromEntries()` with the parseWithZod helper
   const submission = parseWithZod(formData, { schema: UserEditorSchema });
 
   // Report the submission to client if it is not successful
@@ -30,7 +48,9 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   // const user = await createUser(submission.value);
+
   // console.log({ user });
+
   // // Return a form error if the message is not sent
   // if (!user) {
   //   return submission.reply({
@@ -53,10 +73,10 @@ export default function Example() {
     constraint: getZodConstraint(UserEditorSchema),
     // shouldRevalidate: "onInput",
     defaultValue: {
-      emails: [''],
+      contacts: [{}],
     },
   });
-  const emails = fields.emails.getFieldList();
+  const contacts = fields.contacts.getFieldList();
 
   return (
     <div>
@@ -64,7 +84,7 @@ export default function Example() {
         <Link to="/">Home</Link>
       </div>
       <Form method="POST" {...getFormProps(form)}>
-        <h1>Array form</h1>
+        <h1>NestedArray form</h1>
         <label htmlFor={fields.name.id}>Name:</label>
         <input {...getInputProps(fields.name, { type: "text" })} />
         <div id={fields.name.errorId}>{fields.name.errors}</div>
@@ -74,27 +94,45 @@ export default function Example() {
         <div id={fields.age.errorId}>{fields.age.errors}</div>
 
         <ul>
-          {emails.map((email, index) => {
+          {contacts.map((contact, index) => {
+            const contactFields = contact.getFieldset();
+            console.log("key:", contact.key);
+
             return (
-              <li key={email.key}>
-                <label htmlFor={email.id}>{`Email#${index + 1}:`}</label>
-                <input {...getInputProps(email, { type: "text" })} />
+              <li key={contact.key} {...getFieldsetProps(contact)}>
+                <label htmlFor={contactFields.mobile.id}>{`Mobile#${
+                  index + 1
+                }:`}</label>
+                <input
+                  {...getInputProps(contactFields.mobile, { type: "text" })}
+                />
                 <button
                   {...form.remove.getButtonProps({
-                    name: fields.emails.name,
+                    name: fields.contacts.name,
                     index,
                   })}
                 >
                   Delete
                 </button>
-                <div id={fields.emails.errorId}>{fields.emails.errors}</div>
+                <div id={contactFields.mobile.errorId}>
+                  {contactFields.mobile.errors}
+                </div>
+                <label htmlFor={contactFields.email.id}>{`Email#${
+                  index + 1
+                }:`}</label>
+                <input
+                  {...getInputProps(contactFields.email, { type: "email" })}
+                />
+                <div id={contactFields.email.errorId}>
+                  {contactFields.email.errors}
+                </div>
               </li>
             );
           })}
         </ul>
         <button
           {...form.insert.getButtonProps({
-            name: fields.emails.name,
+            name: fields.contacts.name,
           })}
         >
           Add contact
