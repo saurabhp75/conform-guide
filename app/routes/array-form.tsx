@@ -1,8 +1,4 @@
-import {
-  getFormProps,
-  getInputProps,
-  useForm,
-} from "@conform-to/react";
+import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
@@ -29,35 +25,26 @@ export async function action({ request }: ActionFunctionArgs) {
     return submission.reply();
   }
 
-  // const user = await createUser(submission.value);
-  // console.log({ user });
-  // // Return a form error if the message is not sent
-  // if (!user) {
-  //   return submission.reply({
-  //     formErrors: ["Failed to send the message. Please try again later."],
-  //   });
-  // }
-
   return redirect("/user");
 }
 
 export default function Example() {
   const lastResult = useActionData<typeof action>();
   const [form, fields] = useForm({
-    // id: "address-form", // need to set the id for nested form objects
     lastResult,
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: UserEditorSchema });
     },
     shouldValidate: "onBlur",
     constraint: getZodConstraint(UserEditorSchema),
-    // shouldRevalidate: "onInput",
     defaultValue: {
-      emails: [''],
+      emails: [""],
     },
   });
   const emails = fields.emails.getFieldList();
 
+  // Remove warning(see below), by undefining the key prop in the input
+  // Warning: A props object containing a "key" prop is being spread into JSX:
   return (
     <div>
       <div>
@@ -78,7 +65,10 @@ export default function Example() {
             return (
               <li key={email.key}>
                 <label htmlFor={email.id}>{`Email#${index + 1}:`}</label>
-                <input {...getInputProps(email, { type: "text" })} />
+                <input
+                  {...getInputProps(email, { type: "text" })}
+                  key={undefined}
+                />
                 <button
                   {...form.remove.getButtonProps({
                     name: fields.emails.name,
