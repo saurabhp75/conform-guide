@@ -58,14 +58,17 @@ export default function Index() {
     constraint: getZodConstraint(schema),
     // When to validate, default is 'onSubmit'
     // shouldValidate: "onBlur", // "onSubmit"|"onBlur"|"onInput"
+    
     // When to re-validate each field after it is validated,
     // defaults to value of shouldValidate
     // shouldRevalidate: "onInput", // "onSubmit"|"onBlur"|"onInput"
+    
     // Enable client side validation
     // Run this funtion when the form is (re)validated
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
+    
     // called before form is submitted. If onValidate is set, 
     // it will be called only if client validation passes
     // onSubmit()
