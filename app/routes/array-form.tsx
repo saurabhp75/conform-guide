@@ -53,7 +53,7 @@ export default function Example() {
       <Form method="POST" {...getFormProps(form)}>
         <h1>Array form</h1>
         <label htmlFor={fields.name.id}>Name:</label>
-        <input {...getInputProps(fields.name, { type: "text" })} />
+        <input {...getInputProps(fields.name, { type: "text" })} autoFocus/>
         <div id={fields.name.errorId}>{fields.name.errors}</div>
 
         <label htmlFor={fields.age.id}>Age:</label>

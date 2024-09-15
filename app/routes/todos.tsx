@@ -7,7 +7,7 @@ import {
 import { parseWithZod } from "@conform-to/zod";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, Link, useActionData } from "@remix-run/react";
 import { z } from "zod";
 
 const taskSchema = z.object({
@@ -45,74 +45,79 @@ export default function Example() {
   const tasks = fields.tasks.getFieldList();
 
   return (
-    <Form method="post" {...getFormProps(form)}>
-      <div>
-        <label htmlFor={fields.title.id}>Title</label>
-        <input
-          className={!fields.title.valid ? "error" : ""}
-          {...getInputProps(fields.title, { type: "text" })}
-        />
-        <div>{fields.title.errors}</div>
+    <div>
+      <div className="mb-4">
+        <Link to="/">Home</Link>
       </div>
-      <hr />
-      <div className="form-error">{fields.tasks.errors}</div>
-      {tasks.map((task, index) => {
-        const taskFields = task.getFieldset();
+      <Form method="post" {...getFormProps(form)}>
+        <div>
+          <label htmlFor={fields.title.id}>Title</label>
+          <input
+            className={!fields.title.valid ? "error" : ""}
+            {...getInputProps(fields.title, { type: "text" })}
+          />
+          <div>{fields.title.errors}</div>
+        </div>
+        <hr />
+        <div className="form-error">{fields.tasks.errors}</div>
+        {tasks.map((task, index) => {
+          const taskFields = task.getFieldset();
 
-        return (
-          <fieldset key={task.key} {...getFieldsetProps(task)}>
-            <div>
-              <label>Task #{index + 1}</label>
-              <input
-                className={!taskFields.content.valid ? "error" : ""}
-                {...getInputProps(taskFields.content, { type: "text" })}
-              />
-              <div>{taskFields.content.errors}</div>
-            </div>
-            <div>
-              <label>
-                <span>Completed</span>
+          return (
+            <fieldset key={task.key} {...getFieldsetProps(task)}>
+              <div>
+                <label>Task #{index + 1}</label>
                 <input
-                  className={!taskFields.completed.valid ? "error" : ""}
-                  {...getInputProps(taskFields.completed, {
-                    type: "checkbox",
-                  })}
+                  className={!taskFields.content.valid ? "error" : ""}
+                  {...getInputProps(taskFields.content, { type: "text" })}
                 />
-              </label>
-            </div>
-            <button
-              {...form.remove.getButtonProps({
-                name: fields.tasks.name,
-                index,
-              })}
-            >
-              Delete
-            </button>
-            <button
-              {...form.reorder.getButtonProps({
-                name: fields.tasks.name,
-                from: index,
-                to: 0,
-              })}
-            >
-              Move to top
-            </button>
-            <button
-              {...form.update.getButtonProps({
-                name: task.name,
-                value: { content: "" },
-              })}
-            >
-              Clear
-            </button>
-          </fieldset>
-        );
-      })}
-      <button {...form.insert.getButtonProps({ name: fields.tasks.name })}>
-        Add task
-      </button>
-      <hr />
-      <button>Save</button>
-    </Form>
+                <div>{taskFields.content.errors}</div>
+              </div>
+              <div>
+                <label>
+                  <span>Completed</span>
+                  <input
+                    className={!taskFields.completed.valid ? "error" : ""}
+                    {...getInputProps(taskFields.completed, {
+                      type: "checkbox",
+                    })}
+                  />
+                </label>
+              </div>
+              <button
+                {...form.remove.getButtonProps({
+                  name: fields.tasks.name,
+                  index,
+                })}
+              >
+                Delete
+              </button>
+              <button
+                {...form.reorder.getButtonProps({
+                  name: fields.tasks.name,
+                  from: index,
+                  to: 0,
+                })}
+              >
+                Move to top
+              </button>
+              <button
+                {...form.update.getButtonProps({
+                  name: task.name,
+                  value: { content: "" },
+                })}
+              >
+                Clear
+              </button>
+            </fieldset>
+          );
+        })}
+        <button {...form.insert.getButtonProps({ name: fields.tasks.name })}>
+          Add task
+        </button>
+        <hr />
+        <button>Save</button>
+      </Form>
+    </div>
   );
 }

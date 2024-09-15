@@ -23,7 +23,6 @@ const schema = z.object({
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
 
-  // Replace `Object.fromEntries()` with the parseWithZod helper
   const submission = parseWithZod(formData, { schema });
 
   // Report the submission to client if it is not successful
