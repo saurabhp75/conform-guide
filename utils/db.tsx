@@ -35,6 +35,7 @@ type CreateAddressParams = {
 
 export async function createAddress(data: CreateAddressParams) {
   const win = Math.random() > 0.5;
+  
   if (win) return { sent: null };
 
   const address = await prisma.address.create({
@@ -83,4 +84,13 @@ export async function createUser(data: CreateUserParams) {
   //   console.log("Error inserting user in db");
   //   return null;
   // }
+}
+
+export async function dummyAsyncCheck(msg: string) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const returnString = Math.random() < 0.5;
+      resolve(returnString ? msg : null);
+    }, 500);
+  });
 }

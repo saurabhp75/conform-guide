@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { prisma } from "utils/db";
 
 export async function loader() {
@@ -12,6 +12,9 @@ export default function Messages() {
   const data = useLoaderData<typeof loader>();
   return (
     <div>
+      <div className="mb-4">
+        <Link to="/">Home</Link>
+      </div>
       <h1>Messages</h1>
       <ul>
         {data.messages.map((message) => (

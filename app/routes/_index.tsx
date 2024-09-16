@@ -24,6 +24,9 @@ export default function Index() {
         <Link to="nested-array-form">Nested array form</Link>
       </div>
       <div>
+        <Link to="async-valid">Async validation</Link>
+      </div>
+      <div>
         <Link to="todos">To Do</Link>
       </div>
     </>
