@@ -27,6 +27,9 @@ export default function Index() {
         <Link to="async-valid">Async validation</Link>
       </div>
       <div>
+        <Link to="form-resource">Form action in other(resource) route</Link>
+      </div>
+      <div>
         <Link to="todos">To Do</Link>
       </div>
     </>
