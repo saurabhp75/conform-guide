@@ -12,6 +12,9 @@ export default function Index() {
   return (
     <>
       <div>
+        <Link to="without-conform">Form without conform</Link>
+      </div>
+      <div>
         <Link to="regular-form">Regular form</Link>
       </div>
       <div>
