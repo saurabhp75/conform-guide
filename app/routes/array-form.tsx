@@ -5,7 +5,7 @@ import { Form, Link, useActionData } from "@remix-run/react";
 import { z } from "zod";
 
 export const UserEditorSchema = z.object({
-  name: z.string({ required_error: "age is required" }).min(5).max(30),
+  name: z.string({ required_error: "Name is required" }).min(5).max(30),
   age: z
     .number({
       required_error: "Age is required",
@@ -53,7 +53,7 @@ export default function Example() {
       <Form method="POST" {...getFormProps(form)}>
         <h1>Array form</h1>
         <label htmlFor={fields.name.id}>Name:</label>
-        <input {...getInputProps(fields.name, { type: "text" })} autoFocus/>
+        <input {...getInputProps(fields.name, { type: "text" })} autoFocus />
         <div id={fields.name.errorId}>{fields.name.errors}</div>
 
         <label htmlFor={fields.age.id}>Age:</label>
