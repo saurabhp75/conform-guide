@@ -13,7 +13,7 @@ import { z } from "zod";
 
 const ContactsFieldSetSchema = z.object({
   mobile: z.string(),
-  email: z.string().optional(),
+  email: z.string().email().optional(),
   // mobile: z
   //   .string({ required_error: "mobile no. is required" })
   //   .min(10, "Must be a valid mobile number")
